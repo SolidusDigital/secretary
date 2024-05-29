@@ -1,0 +1,97 @@
+{
+    "name": "CHANGE THIS : Extension boilerplate",
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "description": "This extension was created with the awesome extensionizr.com",
+    "homepage_url": "http://extensionizr.com",
+    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrKfMnLqViEyokd1wk57FxJtW2XXpGXzIHBzv9vQI/01UsuP0IV5/lj0wx7zJ/xcibUgDeIxobvv9XD+zO1MdjMWuqJFcKuSS4Suqkje6u+pMrTSGOSHq1bmBVh0kpToN8YoJs/P/yrRd7FEtAXTaFTGxQL4C385MeXSjaQfiRiQIDAQAB",
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "default_locale": "en",
+    "background": {
+        "scripts": [
+            "src/bg/background.js"
+        ],
+        "persistent": true
+    },
+    "page_action": {
+        "default_icon": "icons/icon19.png",
+        "default_title": "page action demo",
+        "default_popup": "src/page_action/page_action.html"
+    },
+    "permissions": [
+        "idle",
+        "management",
+        "notifications",
+        "tabs",
+        "browsingData",
+        "webRequest",
+        "webRequestBlocking"
+    ],
+    "web_accessible_resources": [
+        "src/inject/crypto-js.min.js"
+    ],
+    
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*.pepboys.com/*",
+                "https://*.tirekingdom.com/*",
+                "https://*.discounttire.com/*",
+                "https://*.firestonecompleteautocare.com/*",
+                "https://*.tiresplus.com/*",
+                "https://*.tirerack.com/*",
+                "https://*.goodyear.com/*",
+                "https://*.walmart.com/*",
+                "https://*.mavis.com/*",
+                "https://*.thetirechoice.com/*",
+                "https://*.costco.com/*",
+                "https://*.ntb.com/*",
+                "https://*.monro.com/*",
+                "https://*.bigotires.com/*",
+                "https://*.americantiredepot.com/*",
+                "https://*.americastire.com/*",
+                "https://*.belletire.com/*",
+                "https://*.tirediscounters.com/*",
+                "https://*.midas.com/*"
+            ],
+            "css": [
+                "src/inject/inject.css"
+            ]
+        },
+        
+        {
+            "matches": [
+                "https://*.pepboys.com/*",
+                "https://*.tirekingdom.com/*",
+                "https://*.discounttire.com/*",
+                "https://*.firestonecompleteautocare.com/*",
+                "https://*.tiresplus.com/*",
+                "https://*.tirerack.com/*",
+                "https://*.goodyear.com/*",
+                "https://*.walmart.com/*",
+                "https://*.mavis.com/*",
+                "https://*.thetirechoice.com/*",
+                "https://*.costco.com/*",
+                "https://*.ntb.com/*",
+                "https://*.monro.com/*",
+                "https://*.bigotires.com/*",
+                "https://*.americantiredepot.com/*",
+                "https://*.americastire.com/*",
+                "https://*.belletire.com/*",
+                "https://*.tirediscounters.com/*",
+                "https://*.midas.com/*"
+            ],
+            "js": [
+                "js/jquery/jquery.min.js",
+                "src/inject/inject.js",
+                "src/inject/crypto-js.min.js"
+            ]
+            
+
+        }
+    ]
+}

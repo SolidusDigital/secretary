@@ -1,0 +1,33 @@
+version: "3.3"
+services:
+  mssql:
+    hostname: mssqletl
+    privileged: true
+    restart: always
+    build:
+      context: mssql/
+      dockerfile: dockerfile
+    ports:
+      - 1433:1433
+    environment:
+          SA_PASSWORD: "1A horse cannot unlock sheeps!"
+          ACCEPT_EULA: "Y"
+          HOSTNAME: mssqletl
+          MSSQL_AGENT_ENABLED: True 
+    volumes:
+      - type: volume
+        source: data
+        target: /var/opt/mssql
+      - /mnt/cloudbox:/mnt/cloudbox
+      - /mnt/backup_drive:/mnt/backup_drive
+  restore:
+    build:
+      context: DbBackup
+      args:
+        BACKUP_SERVICE_MODE: ${BACKUP_SERVICE_MODE}
+    volumes:
+      - /mnt/cloudbox:/mnt/cloudbox
+      - /mnt/backup_drive:/mnt/backup_drive
+    restart: always
+volumes:
+  data:

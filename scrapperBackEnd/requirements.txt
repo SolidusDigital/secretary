@@ -1,0 +1,7 @@
+
+pyodbc
+GitPython
+python-dotenv~=0.18.0
+pytz
+dateparser
+websockets

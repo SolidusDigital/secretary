@@ -1,0 +1,57 @@
+
+
+
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+# Create non-root user and update permissions
+#
+RUN useradd -M -s /bin/bash -u 10001 -g 0 mssql || true
+RUN mkdir -p -m 770 /var/opt/mssql
+USER root
+RUN chgrp -R 0 /var/opt/mssql
+RUN chown 10001 /var/opt/mssql
+
+
+RUN mkdir -p -m 770 /var/opt/mssql/data/ReplData
+RUN chgrp -R 0 /var/opt/mssql/data/ReplData
+RUN chown 1001 /var/opt/mssql/data/ReplData
+# Grant sql the permissions to connect to ports <1024 as a non-root user
+#
+RUN setcap 'cap_net_bind_service+ep' /opt/mssql/bin/sqlservr
+
+# Allow dumps from the non-root process
+# 
+RUN setcap 'cap_sys_ptrace+ep' /opt/mssql/bin/paldumper
+RUN setcap 'cap_sys_ptrace+ep' /usr/bin/gdb
+
+# Add an ldconfig file because setcap causes the os to remove LD_LIBRARY_PATH
+# and other env variables that control dynamic linking
+#
+RUN mkdir -p /etc/ld.so.conf.d && touch /etc/ld.so.conf.d/mssql.conf
+RUN echo -e "# mssql libs\n/opt/mssql/lib" >> /etc/ld.so.conf.d/mssql.conf
+RUN ldconfig
+
+RUN apt-get update \
+    && apt-get install --yes cifs-utils keyutils davfs2
+
+
+RUN mkdir /mnt/cloudbox
+RUN chmod -R a+rw /mnt/cloudbox/
+# RUN echo 'https://u312939.your-storagebox.de /mnt/cloudbox davfs rw,uid=10001,gid=10001,file_mode=0770,dir_mode=0770 0 0' >> /etc/fstab
+# RUN echo 'https://u312939.your-storagebox.de u312939 Qr78R4YqxWZyF9Q7' >> /etc/davfs2/secrets
+# RUN mount -a
+
+COPY entrypoint.sh /
+# RUN mount -t cifs -o username=u312939,password=Qr78R4YqxWZyF9Q7,dir_mode=0777,file_mode=0777 //u312939.your-storagebox.de/backup /mnt/cloudbox
+RUN chmod +x /entrypoint.sh
+# RUN "/bin/bash /entrypoint.sh"
+# RUN /entrypoint.sh
+
+# USER mssql
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+
+# CMD ["/bin/bash", "-c", "mount -t cifs -o username=u312939,password=Qr78R4YqxWZyF9Q7,dir_mode=0777,file_mode=0777 //u312939.your-storagebox.de/backup /mnt/cloudbox;/opt/mssql/bin/sqlservr"]
+# CMD ["/opt/mssql/bin/sqlservr"]
+CMD ["entrypoint.sh"]
+
+# CMD ["mount -t cifs -o username=u312939,password=Qr78R4YqxWZyF9Q7,dir_mode=0777,file_mode=0777 //u312939.your-storagebox.de/backup /mnt/cloudbox; /opt/mssql/bin/sqlservr"]

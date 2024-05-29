@@ -1,0 +1,5 @@
+Host storagebox
+    HostName u312939.your-storagebox.de
+    User u312939
+    Port 23
+    IdentityFile ~/.ssh/hetzner_storage_full

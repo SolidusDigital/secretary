@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  backend:
+    build: scrapperBackEnd
+    ports:
+      - "8087:8087" # websocket 
+    volumes:
+      - logs:/var/log/
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  # proxy:
+  #   ports:
+  #     - "9000:9000" 
+  #     # - "80:80" 
+  #     # - "443:443" 
+  #   build: "proxyservice"
+  #   shm_size: "1gb"
+  # proxy2:
+  #   ports:
+  #     - "9000:9000" 
+  #     # - "80:80" 
+  #     # - "443:443" 
+  #   image: "ghcr.io/solohin/http-proxy-rotator:main"
+  #   shm_size: "1gb"
+  #   volumes:
+  #     - ./proxylist.txt:/app/proxylist.txt
+  #   environment:
+  #     - NODE_PORT=9000 
+  #     - NODE_REQUESTS_PER_PROXY=300 
+  #     - NODE_MAX_TIME=180
+    
+  scrapper:
+    # ports:
+      # - "9000:9000" # proxy
+      # - "5900:5900" # vnc
+    build: "scrapperWorker"
+    shm_size: "2gb"
+    depends_on:
+      - backend
+      # - proxy2
+  restarter:
+    image: docker
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    command: ["/bin/sh", "-c", "while true; do sleep 1200; docker restart $$(docker ps -f name=scrapper | sort -k 5 -t ' '  -r| cut -f 1 -d ' '| head -n 21| tail -20); done"] 
+    #restart 5 scrappers every 10 min 
+    restart: unless-stopped
+
+volumes:
+  logs:
+    driver: local
+
+
+
+
+# networks:
+#   mynet:
+#     driver: bridge

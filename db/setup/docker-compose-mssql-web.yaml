@@ -1,0 +1,51 @@
+version: "3.2"
+services:
+  mssql:
+    privileged: true
+    restart: always
+    build:
+      context: mssql_web/
+      dockerfile: dockerfile
+    ports:
+      - 1466:1466
+    environment:
+          SA_PASSWORD: "1A horse cannot unlock sheeps!"
+          ACCEPT_EULA: "Y"
+          PORT: 1466
+          MSSQL_AGENT_ENABLED: True
+          # USER: 1001
+    # env_file:
+          # - sqlserver.env
+          # - mssql/sapassword.env      
+    volumes:
+      - type: volume
+        source: web_data
+        target: /var/opt/mssql
+      - /mnt/cloudbox:/mnt/cloudbox
+
+    # cap_add:
+    #   - SYS_ADMIN 
+    #   - DAC_READ_SEARCH
+    #   - CAP_DAC_READ_SEARCH
+volumes:
+  web_data:
+
+  # webdav:
+  #   driver: fentas/davfs
+  #   driver_opts:
+  #     # type: cifs    
+  #     remote: "//u312939.your-storagebox.de/backup"
+  #     o: "username=u312939,password=Qr78R4YqxWZyF9Q7,vers=3.0,dir_mode=0777,file_mode=0777"
+  # cifs_mount:
+  #   driver: local
+  #   driver_opts:
+  #     type: cifs    
+  #     device: "//u312939.your-storagebox.de/backup/cse"
+  #     o: "username=u312939,password=Qr78R4YqxWZyF9Q7,vers=3.0,dir_mode=0777,file_mode=0777"
+
+  # webdav:
+  # driver: fentas/davfs
+  # driver_opts:
+  #   # type: rsync    
+  #   # remote: "//u312939.your-storagebox.de/backup/cse"
+  #   o: "url=https://u312939:Qr78R4YqxWZyF9Q7@u312939.your-storagebox.de/backup"
